@@ -114,3 +114,69 @@ def remove_person(person_data: dict):
             raise Exception
     finally:
         conn.close()
+
+
+def get_person_summary(name: str):
+    conn = sqlite3.connect(db_name)
+    cursor = conn.cursor()
+    # Retrieve the person's ID
+    cursor.execute('SELECT id FROM person WHERE name = ?', (name,))
+    person_row = cursor.fetchone()
+    if not person_row:
+        print(f"No person found with the name '{name}'.")
+        return
+    person_id = person_row[0]
+    cursor.execute('''
+                        SELECT C.amount, B.link_to_msg
+                        FROM CreditorDebtor C
+                        JOIN bill B ON C.bill_id = B.id
+                        WHERE C.person_id = ?
+                    ''', (person_id,))
+    rows = cursor.fetchall()
+    if not rows:
+        print(f"No transactions found for '{name}'.")
+        return
+    total = 0
+    summary = []
+    for amount, link_to_msg in rows:
+        summary.append({
+            "amount": amount,
+            "link_to_msg": link_to_msg
+        })
+        total += amount
+    conn.close()
+    return summary, total
+
+
+
+def get_all_person_names():
+    conn = sqlite3.connect(db_name)
+    cursor = conn.cursor()
+    try:
+        cursor.execute('SELECT name FROM person')
+        rows = cursor.fetchall()
+        names = [row[0] for row in rows]
+        return names
+    finally:
+        conn.close()
+
+
+def remove_creditor_debtor_by_name(person_name: str):
+    conn = sqlite3.connect(db_name)
+    cursor = conn.cursor()
+
+    try:
+        # Get the person's ID based on their name
+        cursor.execute('SELECT id FROM person WHERE name = ?', (person_name,))
+        person_row = cursor.fetchone()
+
+        if not person_row:
+            print(f"No person found with the name '{person_name}'.")
+            return
+        person_id = person_row[0]
+        cursor.execute('DELETE FROM CreditorDebtor WHERE person_id = ?', (person_id,))
+        conn.commit()
+        print(f"All CreditorDebtor entries related to '{person_name}' have been removed.")
+
+    finally:
+        conn.close()

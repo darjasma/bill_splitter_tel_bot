@@ -55,3 +55,25 @@ def parse_remove_person(input_string: str):
         raise ValueError("Invalid input format. Expected format: 'remove_person name'")
     return {'name': parts[1]}
 
+
+def parse_check(input_string: str):
+    input_string = input_string.strip()
+    parts = input_string.split()
+    if len(parts) != 2 or parts[0].lower() != 'check':
+        raise ValueError("Invalid input format. Expected format: 'check name'")
+    return parts[1]
+
+
+def parse_pay_off_command(input_string: str):
+    # Strip any leading/trailing whitespace from the input
+    input_string = input_string.strip()
+
+    # Split the input string into parts
+    parts = input_string.split()
+
+    # Ensure the input is in the correct format
+    if len(parts) != 2 or parts[0].lower() != 'pay_off':
+        raise ValueError("Invalid input format. Expected format: 'pay_off name'")
+
+    # Return the name part
+    return parts[1]
