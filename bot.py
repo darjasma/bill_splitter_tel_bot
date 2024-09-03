@@ -9,10 +9,13 @@ BOT_TOKEN = '7524865491:AAG7wO8bY-uCvUTNy4_RRgdyyDHDED3F3_A'
 bot = telebot.TeleBot(BOT_TOKEN)
 
 
-# @bot.message_handler(func=lambda message: True)
-# def print_message_link(message):
-#     link = f"https://t.me/c/{str(message.chat.id)[4:]}/{message.message_id}{message.chat.type}"
-#     print(link)
+
+
+# @bot.message_handler(func=lambda msg: True)
+def ed(message):
+    link = f"https://t.me/c/{str(message.chat.id)[4:]}/{message.message_thread_id}/{message.message_id}"
+    print(link)
+    print(message.chat)
 
 
 @bot.message_handler(commands=['start', 'hello'])
@@ -29,11 +32,11 @@ def echo_all(message):
     try:
         if command == "new":
             parsed = parse_new(message)
-            link = f"https://t.me/c/{str(org_msg.chat.id)[4:]}/{org_msg.message_id}"
+            link = f"https://t.me/c/{str(org_msg.chat.id)[4:]}/{org_msg.message_thread_id}/{org_msg.message_id}"
+            print(link)
             add_bill(parsed, link)
             logging.info(f"new {parsed} {link}")
             bot.reply_to(org_msg, 'done')
-        elif command == "add_person":
             parsed = parse_add_person(message)
             add_person(parsed)
             bot.reply_to(org_msg, 'done')
@@ -55,7 +58,8 @@ def echo_all(message):
             else:
                 summary, total = get_person_summary(parsed)
                 msg += f"{parsed}:\n"
-                msg += f"{summary['amount']}, {summary['link_to_msg']}\n"
+                for entry in summary:
+                    msg += f"{entry['amount']}, {entry['link_to_msg']}\n"
                 msg += f"Total sum: {total}\n"
             bot.reply_to(org_msg, msg)
 
@@ -67,7 +71,6 @@ def echo_all(message):
             msg += names[-1]
             bot.reply_to(org_msg, msg)
 
-
-
-    except Exception:
+    except Exception as e:
+        print(e)
         return
