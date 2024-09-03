@@ -4,7 +4,8 @@ import logging
 from db_controller import add_bill, add_person, remove_person, get_person_summary, get_all_person_names
 from utils import parse_new, parse_add_person, parse_remove_person, parse_check
 
-BOT_TOKEN = '7524865491:AAG7wO8bY-uCvUTNy4_RRgdyyDHDED3F3_A'
+from token_api import TOKEN as BOT_TOKEN
+
 
 bot = telebot.TeleBot(BOT_TOKEN)
 
