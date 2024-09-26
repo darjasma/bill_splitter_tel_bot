@@ -133,11 +133,11 @@ def get_person_summary(name: str):
                         WHERE C.person_id = ?
                     ''', (person_id,))
     rows = cursor.fetchall()
+    summary = []
     if not rows:
         print(f"No transactions found for '{name}'.")
-        return
+        return summary, 0
     total = 0
-    summary = []
     for amount, link_to_msg in rows:
         summary.append({
             "amount": amount,
@@ -161,7 +161,7 @@ def get_all_person_names():
         conn.close()
 
 
-def remove_creditor_debtor_by_name(person_name: str):
+def pay_off(person_name: str):
     conn = sqlite3.connect(db_name)
     cursor = conn.cursor()
 

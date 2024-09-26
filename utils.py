@@ -64,7 +64,7 @@ def parse_check(input_string: str):
     return parts[1]
 
 
-def parse_pay_off_command(input_string: str):
+def parse_pay_off(input_string: str):
     # Strip any leading/trailing whitespace from the input
     input_string = input_string.strip()
 
